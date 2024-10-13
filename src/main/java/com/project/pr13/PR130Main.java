@@ -9,7 +9,6 @@ import com.project.pr13.format.PersonaFormatter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.io.InputStream;
 
 /**
  * Classe principal que gestiona la lectura i el processament de fitxers XML per obtenir dades de persones.
@@ -53,8 +52,8 @@ public class PR130Main {
         Document doc = parseXML(inputFile);
         if (doc != null) {
             NodeList persones = doc.getElementsByTagName("persona");
-            // imprimirCapçaleres();
-            // imprimirDadesPersones(persones);
+            imprimirCapçaleres();
+            imprimirDadesPersones(persones);
         }
     }
 
@@ -65,7 +64,36 @@ public class PR130Main {
      * @return Document XML carregat o null si hi ha hagut un error en la lectura.
      */
     public static Document parseXML(File inputFile) {
-        // *************** CODI PRÀCTICA **********************/
-        return null; // Substitueix pel teu        
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            return dBuilder.parse(inputFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Imprimeix les capçaleres de la taula.
+     */
+    public void imprimirCapçaleres() {
+        System.out.println(PersonaFormatter.getCapçaleres());
+    }
+
+    /**
+     * Imprimeix les dades de les persones en format alineat.
+     * 
+     * @param persones NodeList amb les persones a imprimir.
+     */
+    public void imprimirDadesPersones(NodeList persones) {
+        for (int i = 0; i < persones.getLength(); i++) {
+            Element persona = (Element) persones.item(i);
+            String nom = persona.getElementsByTagName("nom").item(0).getTextContent();
+            String cognom = persona.getElementsByTagName("cognom").item(0).getTextContent();
+            String edat = persona.getElementsByTagName("edat").item(0).getTextContent();
+            String ciutat = persona.getElementsByTagName("ciutat").item(0).getTextContent();
+            System.out.println(PersonaFormatter.formatarPersona(nom, cognom, edat, ciutat));
+        }
     }
 }
